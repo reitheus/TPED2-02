@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "arvorebin.h": "c",
+        "stdbool.h": "c",
+        "item.h": "c"
+    }
+}
