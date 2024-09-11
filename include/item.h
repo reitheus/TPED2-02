@@ -10,27 +10,25 @@
 #define M 10
 
 typedef struct analise{
-  double timepre;//tempo no pré processamento
-  double timepesquisa;//tempo na pesquisa
-  int transpre;//transferencia no pré processamento
-  int transpesquisa;//transferencia na pesquisa
-  int comppre;//comparações no pré processamento
-  int comppesquisa;//comparações na pesquisa
+  int numTransLeitura;//numero de leitura da memória externa para memória interna
+  int numTransEscrita;//numero de escrita da memória interna para memória externa
+  int numComp// número de comparações entre valores do campo de ordenação dos registros
+  double time;//tempo e execução do método
 }Analise;
 
 
 typedef struct item{
-  int chave;
-  long int dado1;
-  char dado2[1001];
-  char dado3[5001];
+  long int numInscricao;//Numero de insrição do aluno
+  float notas;//Nota obtida pelo aluno, valor real entre 0.0 e 100.0
+  char estado[2];// Estado do Aluno
+  char cidade[50];// Cidade do Aluno
+  char curso[30]//Curso do Aluno
 } Item;
 
 typedef struct dadospesquisa{
   int metodo;
   long int quant;
   int situacao;
-  int chave;
   char op[3];
   Analise analise;
 } DadosPesquisa;
