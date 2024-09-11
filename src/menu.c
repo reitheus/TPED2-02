@@ -1,9 +1,5 @@
 #include "../include/menu.h"
 #include "../include/item.h"
-#include "../include/sequencial.h"
-#include "../include/arvorebin.h"
-#include "../include/arvoreb.h"
-#include "../include/arvorebEst.h"
 #include <ctype.h>
 #include <string.h>
 
@@ -38,7 +34,7 @@ int printArquivo(int tam, FILE * pFile){
     fread(vetor,sizeof(Item), quant, pFile);
     //fseek(pFile, NITENS, SEEK_CUR);
     for(int i = 0; i < quant; i++){
-      printf("Item %i\n", vetor[i].chave);
+      printf("Item %li\n", vetor[i].numInscricao);
     }
   }
     
@@ -57,7 +53,7 @@ int menu(int argc, char **argv) {
   */
 
   FILE *pFile;
-  Item x;
+  //Item x;
   DadosPesquisa entrada;
   entrada.metodo = atoi(argv[1]);
   entrada.quant = atoi(argv[2]);
@@ -121,16 +117,16 @@ int menu(int argc, char **argv) {
   
   switch(entrada.metodo){
     case 1:
-      intercalaOrdenaInterna();
+      //intercalaOrdenaInterna();
     break;
     case 2:
-      intercalaSelecao();
+      //intercalaSelecao();
     break;
     case 3:
-      quicksort();
+      //quicksort();
     break;
     case 4:
-      gerar(pFile, entrada);
+      converte(pFile, entrada);
     break;
 
     default:

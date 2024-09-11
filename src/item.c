@@ -2,15 +2,12 @@
 
 void imprimeDado(DadosPesquisa *dado, Item *entrada) {
     printf("|  Pré - Processamento: \n");
-    printf("|  Quantidade de comparações no pré processamento = %d\n", dado->analise.comppre);
-    printf("|  Quantidade de transferencias no Pré processamento = %d\n", dado->analise.transpre);
-    printf("|  Tempo de execução do pré processamento = %lf segundos\n", dado->analise.timepre);
+    printf("|  Quantidade de transferencias Leitura = %d\n", dado->analise.numTransLeitura);
+    printf("|  Quantidade de transferencias Escrita = %d\n", dado->analise.numTransEscrita);
+    printf("|  Quantidade de Comparações = %d \n", dado->analise.numComp);
+    printf("|  Tempo de execução = %lf \n", dado->analise.time);
     printf("-----------------------------------------------------------------------------------------\n");
-    printf("|  Pesquisa: \n");
-    printf("|  Quantidade de comparações na pesquisa = %d\n", dado->analise.comppesquisa);
-    printf("|  Quantidade de transferencias na pesquisa = %d\n", dado->analise.transpesquisa);
-    printf("|  Tempo de execução na pesquisa = %lf segundos\n", dado->analise.timepesquisa);
-    printf("-----------------------------------------------------------------------------------------\n");
+    
 }
 
 void impreResultado(bool pesq,DadosPesquisa *dado,Item* entrada){
@@ -22,7 +19,7 @@ void impreResultado(bool pesq,DadosPesquisa *dado,Item* entrada){
     printf("-----------------------------------------------------------------------------------------\n");
     imprimeDado(dado, entrada);
     printf("\n");
-  } else {
+  }else {
     printf("\n");
     printf("-----------------------------------------------------------------------------------------\n");
     printf("|  Não encontrou a Chave!  \n");

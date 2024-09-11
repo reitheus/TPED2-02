@@ -1,6 +1,6 @@
 #include "../include/menu.h"
 #include "../include/item.h"
-#include "../include/sequencial.h"
+
 
 #define TAMREAD 101
 
@@ -20,7 +20,7 @@ int converteLinhaEmStruct(char *linha, Item *item){
         texto[0][i] = linha[i];
         i++;
     }
-    i = 10
+    i = 10;
     while(i < 15){// copia a nota do aluno para matriz
         texto[1][i] = linha[i];
         i++;
@@ -53,10 +53,9 @@ int converteLinhaEmStruct(char *linha, Item *item){
 
 //converte o arquivo pFile do tipo txt no arquivo pFile2 do tipo binario
 //pFile arquivo txt, pFile arquivo Binario, dados de entrada
-int conversor(FILE *pFile, FILE *pfile2, DadosPesquisa entrada){
+int conversor(FILE *pFile, FILE *pFile2, DadosPesquisa entrada){
    char linha[TAMREAD];
    Item item;
-
 
     for(int i = 0; i < entrada.quant ; i++){
 
@@ -65,12 +64,10 @@ int conversor(FILE *pFile, FILE *pfile2, DadosPesquisa entrada){
         fwrite(&item, sizeof(Item), 1, pFile2);
 
     }
-
     return 0;
-
 }
 
-int inverte(FILE *pFile,FILE *pfile2,DadosPesquisa  entrada){
+int inverte(FILE *pFile,FILE *pFile2,DadosPesquisa  entrada){
     Item item;
     int i, j = entrada.quant;
 
@@ -78,7 +75,7 @@ int inverte(FILE *pFile,FILE *pfile2,DadosPesquisa  entrada){
         j--;
         fseek(pFile,j * sizeof(Item), SEEK_SET);
         fread(&item,sizeof(Item), 1, pFile);
-        fwrite(&item,sizeof(Item), 1, pFile2)
+        fwrite(&item,sizeof(Item), 1, pFile2);
     }
     return 0;
 }
@@ -98,13 +95,13 @@ int converte(FILE *pFile, DadosPesquisa entrada){
         case 2:
             pFile = fopen("ascendente.bin", "rb");
             pFile2 = fopen("descendente.bin", "wb");
-            inverte(pFile, pfile2, entrada)
+            inverte(pFile, pFile2, entrada);
             
         break;
         case 3:
-            pFile = fopen(PROVAO.txt, "r");
+            pFile = fopen("PROVAO.txt", "r");
             pFile2 = fopen("aleatorio.bin", "wb");
-            conversor(pFile, pfile2, DadosPesquisa entrada);
+            conversor(pFile, pFile2, entrada);
             
         break;
         default:
