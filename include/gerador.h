@@ -7,7 +7,7 @@
 #define GERADOR_H
 
 //arquivo que vai ser gerado por stream, Os dados de entrada
-int gerar(FILE *, DadosPesquisa );
+int converte(FILE *, DadosPesquisa );
 
 
 
