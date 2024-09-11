@@ -12,7 +12,7 @@
 typedef struct analise{
   int numTransLeitura;//numero de leitura da memória externa para memória interna
   int numTransEscrita;//numero de escrita da memória interna para memória externa
-  int numComp// número de comparações entre valores do campo de ordenação dos registros
+  int numComp;// número de comparações entre valores do campo de ordenação dos registros
   double time;//tempo e execução do método
 }Analise;
 
@@ -22,8 +22,8 @@ typedef struct item{
   float notas;//Nota obtida pelo aluno, valor real entre 0.0 e 100.0
   char estado[2];// Estado do Aluno
   char cidade[50];// Cidade do Aluno
-  char curso[30]//Curso do Aluno
-} Item;
+  char curso[30];//Curso do Aluno
+}Item;
 
 typedef struct dadospesquisa{
   int metodo;
