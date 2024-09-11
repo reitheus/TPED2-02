@@ -12,15 +12,14 @@
 int erros() {
   printf("Formato incorreto!\n");
   printf("Formatos:\n");
-  printf("pesquisar <método> <quantidade> <situacao> <chave> [-P]\n");
+  printf("ordena <método> <quantidade> <situacao> [-P]\n");
   printf("  <método> Método de Pesquisa Externa\n");
   printf("  <quantidade> quantidade de registros a serem gerados\n");
   printf("  <situacao> 1 (arquivo ordenado ascendentemente)\n");
   printf("             2 (arquivo ordenado descendentemente)\n");
-  printf("             3 (arquivo ordenado aleatoriamente)\n");
+  printf("             3 (arquivo desordenado aleatoriamente)\n");
   printf("\n\n");
-  printf("<chave> Item a ser pesquisdo\n");
-  printf("[-p] Para mostrar os itens pesquisados\n");
+  printf("[-p] Para mostrar os do arquivo\n");
   return 0;
 }
 
@@ -43,7 +42,6 @@ int printArquivo(int tam, FILE * pFile){
     }
   }
     
-
   return 0;
 }
 
@@ -64,44 +62,56 @@ int menu(int argc, char **argv) {
   entrada.metodo = atoi(argv[1]);
   entrada.quant = atoi(argv[2]);
   entrada.situacao = atoi(argv[3]);
-  entrada.chave = atoi(argv[4]);
   //Zera as variaveis que contam e analisam o desempenho
   
-  entrada.analise.comppesquisa = 0;
-  entrada.analise.transpre = 0;
-  entrada.analise.transpesquisa = 0;
-  entrada.analise.comppre = 0;
+  entrada.analise.numTransLeitura = 0;
+  entrada.analise.numTransEscrita = 0;
+  entrada.analise.numComp = 0;
+  entrada.analise.time = 0.0;
 
-
-
-  if(argc == 6){
+  if(argc == 5){
     strcpy(entrada.op, argv[5]);
   }
 
-  if(argc < 5 || argc > 6 || entrada.metodo < 1 || entrada.metodo > 5 || entrada.quant < 1){// Verifica se a quantidade de parametros está correta
+  if(argc < 4 || argc > 5 || entrada.metodo < 1 || entrada.metodo > 3 || entrada.quant < 1){// Verifica se a quantidade de parametros está correta
     printf("\nErro 1\n");
    
     erros();
     return 0;
-  }else if(entrada.situacao < 1 || entrada.situacao > 3 || entrada.chave < 0 ){
+  }else if(entrada.situacao < 1 || entrada.situacao > 3){
     printf("Erro 2");
     erros();
     return 0;
-  }else if( (strcmp(entrada.op, "-P") != 0 && strcmp(entrada.op, "-p") != 0) && argc == 6){
+  }else if( (strcmp(entrada.op, "-P") != 0 && strcmp(entrada.op, "-p") != 0) && argc == 5){
     printf("Erro 3");
     erros();
     return 0;
   }
-  if(entrada.metodo != 5){
+  if(entrada.metodo != 4){
     switch(entrada.situacao){
       case 1:
         pFile = fopen("ascendente.bin", "rb");
+        if(pFile == NULL){
+          printf("Arquivo não encontrado, primeiro gere o arquivo ascendente.bin\n");
+          printf("Para gerar o arquivo utilize  opção 4, Gere o arquivo aleatorio depois gere o arquivo Ascendente");
+
+        }
       break;
       case 2:
         pFile = fopen("descendente.bin", "rb");
+        if(pFile == NULL){
+          printf("Arquivo não encontrado, primeiro gere o arquivo ascendente.bin\n");
+          printf("Para gerar o arquivo utilize  opção 4, Gere o arquivo aleatorio,\n depois gere o arquivo Ascendente,\n depois Gere o arquivo descendente");
+
+        }
       break;
       case 3:
         pFile = fopen("aleatorio.bin", "rb");
+        if(pFile == NULL){
+          printf("Arquivo não encontrado, primeiro gere o arquivo ascendente.bin\n");
+          printf("Para gerar o arquivo utilize  opção 4, Gere o arquivo aleatorio");
+
+        }
       break;
       default:
         printf("\nOpção incorreta\n");
@@ -111,19 +121,15 @@ int menu(int argc, char **argv) {
   
   switch(entrada.metodo){
     case 1:
-      acessoSequencial(pFile, entrada.quant, entrada.situacao, &x, entrada.chave, &entrada);
-     
+      intercalaOrdenaInterna();
     break;
     case 2:
-      arvoreBinaria(pFile,&entrada.quant,&entrada.chave,&entrada);
+      intercalaSelecao();
     break;
     case 3:
-      criaarvoreb(pFile,&x,&entrada);
+      quicksort();
     break;
     case 4:
-      criaarvoreBE(pFile,&x,&entrada);
-    break;
-    case 5:
       gerar(pFile, entrada);
     break;
 
@@ -136,7 +142,7 @@ if((strcmp(entrada.op, "-P") == 0 || strcmp(entrada.op, "-p") == 0) && entrada.m
   printArquivo(entrada.quant, pFile);
 }
 
-  if(entrada.metodo != 5){
+  if(entrada.metodo != 4){
     fclose(pFile);
   }
 
