@@ -10,6 +10,6 @@ void swap(Item *a, Item *b);
 int partition(Item arr[], int esq, int dir, Analise *analise);
 
 // implementaçao algoritmo QuickSort
-vounçid quickSort(Item arr[], int esq, int dir, Analise *analise);
+void quickSort(Item arr[], int esq, int dir, Analise *analise);
 
 #endif // QUICKSORT_H

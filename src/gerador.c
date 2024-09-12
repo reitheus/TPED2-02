@@ -105,10 +105,11 @@ int converte(FILE *pFile, DadosPesquisa entrada){
             
         break;
         default:
-        printf("\nOpção incorreta\n");
+            printf("\nOpção incorreta\n");
 
     }
 
+    fclose(pFile);
     fclose(pFile2);
     return 0;
 }
