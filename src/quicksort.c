@@ -1,4 +1,4 @@
-#include "quicksort.h"
+#include "../include/quicksort.h"
 
 // Função para realizar a troca de elementos
 void swap(Item *a, Item *b) {
