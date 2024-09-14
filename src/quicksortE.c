@@ -134,7 +134,8 @@ void retiraMin(TipoA *area,Registro *reg,int *NRArea){
 }
 
 void partitionE(FILE **ArqLei,FILE **ArqEi,FILE **ArqEs,TipoA area, int dir,int esq,int *i,int *j){
-    int LeS = dir, EscS = dir, LeI = esq, EscI = esq, NRArea = 0, Linf = INT_MIN,Lsup = INT_MAX;
+    int LeS = dir, EscS = dir, LeI = esq, EscI = esq, NRArea = 0;
+    float Linf = INT_MIN,Lsup = INT_MAX;
     short OndeLe = true;
     Registro UltLido, Reg;
     fseek(*ArqLei,(LeI - 1)* sizeof(Registro),SEEK_SET);
@@ -159,7 +160,7 @@ void partitionE(FILE **ArqLei,FILE **ArqEi,FILE **ArqEs,TipoA area, int dir,int 
         }else{
             leInf(ArqLei,&UltLido,&LeI,&OndeLe);
         }
-        if(UltLido.notas > LeS){
+        if(UltLido.notas > Lsup){
             *j = EscS;
             escreveMax(ArqEs,UltLido,&EscS);
             continue;
