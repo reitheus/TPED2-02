@@ -50,6 +50,19 @@ int converteLinhaEmStruct(char *linha, Item *item){
     return 0;
 }
 
+//Parametros:Arquivo original que vai ser convertido, arquivo que foi convertido e vai retornar, entrada de dados
+int conersorBinToTxt(FILE *pFile, FILE *pFile2, DadosPesquisa entrada){
+    Item item;
+    for(int i = 0; i < entrada.quant ; i++){
+
+        fread(&item, sizeof(Item), 1, pFile2);
+        fprintf(pFile2, "%8ld %4.1f %[A-Z a-z] %[A-Z a-z] %[A-Z a-z]",item.numInscricao, item.notas, item.estado, item.cidade, item.curso);
+    }
+    return 0;
+
+}
+
+
 
 //converte o arquivo pFile do tipo txt no arquivo pFile2 do tipo binario
 //pFile arquivo txt, pFile arquivo Binario, dados de entrada

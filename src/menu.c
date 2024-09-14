@@ -52,7 +52,7 @@ int menu(int argc, char **argv) {
     argv[5] Opcional se vai aparecer as chaves e pesquisa - p
   */
 
-  FILE *pFile;
+  FILE *pFile, *pFile2;
   //Item x;
   DadosPesquisa entrada;
   entrada.metodo = atoi(argv[1]);
@@ -117,7 +117,7 @@ int menu(int argc, char **argv) {
   
   switch(entrada.metodo){
     case 1:
-      //intercalaOrdenaInterna();
+      //intercalaOrdenaInterno();
     break;
     case 2:
       //intercalaSelecao();
