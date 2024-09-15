@@ -20,7 +20,7 @@ typedef struct analise{
 typedef struct item{
   long int numInscricao;//Numero de insrição do aluno
   float notas;//Nota obtida pelo aluno, valor real entre 0.0 e 100.0
-  char estado[2];// Estado do Aluno
+  char estado[3];// Estado do Aluno
   char cidade[50];// Cidade do Aluno
   char curso[30];//Curso do Aluno
 }Item;

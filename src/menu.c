@@ -19,8 +19,8 @@ int erros() {
   return 0;
 }
 
-int printArquivo(int tam, FILE * pFile){
-  int quant = NITENS;
+int printArquivo(int tam, FILE *pFile){
+  int quant = 50;
   Item vetor[NITENS];
   fseek(pFile, 0, SEEK_SET);//coloca o ponteiro no inicio do aquivo
 
@@ -34,7 +34,7 @@ int printArquivo(int tam, FILE * pFile){
     fread(vetor,sizeof(Item), quant, pFile);
     //fseek(pFile, NITENS, SEEK_CUR);
     for(int i = 0; i < quant; i++){
-      printf("Item %li\n", vetor[i].numInscricao);
+      printf("Item %.1f\n", vetor[i].notas);
     }
   }
     
@@ -66,10 +66,10 @@ int menu(int argc, char **argv) {
   entrada.analise.time = 0.0;
 
   if(argc == 5){
-    strcpy(entrada.op, argv[5]);
+    strcpy(entrada.op, argv[4]);
   }
 
-  if(argc < 4 || argc > 5 || entrada.metodo < 1 || entrada.metodo > 3 || entrada.quant < 1){// Verifica se a quantidade de parametros está correta
+  if(argc < 4 || argc > 5 || entrada.metodo < 1 || entrada.metodo > 4 || entrada.quant < 1){// Verifica se a quantidade de parametros está correta
     printf("\nErro 1\n");
    
     erros();
@@ -83,6 +83,7 @@ int menu(int argc, char **argv) {
     erros();
     return 0;
   }
+  
   if(entrada.metodo != 4){
     switch(entrada.situacao){
       case 1:
@@ -117,7 +118,8 @@ int menu(int argc, char **argv) {
   
   switch(entrada.metodo){
     case 1:
-      //intercalaOrdenaInterno();
+      //intercalaOrdenaInterno(pFile, pFile2, entrada);
+      
     break;
     case 2:
       //intercalaSelecao();
@@ -126,6 +128,7 @@ int menu(int argc, char **argv) {
       //quicksort();
     break;
     case 4:
+      
       converte(pFile, entrada);
     break;
 
@@ -139,6 +142,7 @@ if((strcmp(entrada.op, "-P") == 0 || strcmp(entrada.op, "-p") == 0) && entrada.m
 }
 
   if(entrada.metodo != 4){
+    
     fclose(pFile);
   }
 

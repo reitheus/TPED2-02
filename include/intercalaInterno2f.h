@@ -14,6 +14,6 @@ typedef struct fitas{
     int itensLido;
     int ativa;//verifica se a fita está ativa para ler
     int vazia;//verifica se a fita está vazia
-}Fitas;
+}FITAS;
 
 #endif // INTERCALAINTERNO2F_H
