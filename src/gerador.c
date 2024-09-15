@@ -2,43 +2,52 @@
 #include "../include/item.h"
 
 
-#define TAMREAD 101
+#define TAMREAD 102
 
 //converte os itens de um vetor linha para uma struct
 //entrada: linha lida do texto, item passado por ponteiro que vai ser retornado
 int converteLinhaEmStruct(char *linha, Item *item){
-    int i = 0;
+    int i = 0, j = 0;
     char texto[5][51];//matriz de textos
     //texto[0] é numero de inscrição
     //texto[1] é nota do aluno
     // texto[2] estado do aluno
     // texto[3] é Cidade do aluno
     // texto[4] éCurso do aluno
-    
+    j = 0;
     //Os loops abaixo copiam o dado em questão em sequência para uma matriz temporaria
     while(i < 8){//copia os dados do número de inscrição da linha lida para uma matriz temporaria
-        texto[0][i] = linha[i];
+        texto[0][j] = linha[i];
         i++;
+        j++;
     }
     i = 10;
+    j = 0;
     while(i < 15){// copia a nota do aluno para matriz
-        texto[1][i] = linha[i];
+        texto[1][j] = linha[i];
         i++;
+        j++;
     }
     i = 16;
+    j = 0;
     while(i < 17){//copia o estado do aluno para matriz
-        texto[2][i] = linha[i];
+        texto[2][j] = linha[i];
         i++;
+        j++;
     }
     i = 19;
+    j = 0;
     while(i < 68){//copia  a cidade do aluno para matriz
-        texto[3][i] = linha[i];
+        texto[3][j] = linha[i];
         i++;
+        j++;
     }
     i = 70;
+    j = 0;
     while(i < 99){// copia o curso do aluno para matriz
-        texto[4][i] = linha[i];
+        texto[4][j] = linha[i];
         i++;
+        j++;
     }
 
     //o proximo passo é pegar os dados e colocar na struct
@@ -51,12 +60,12 @@ int converteLinhaEmStruct(char *linha, Item *item){
 }
 
 //Parametros:Arquivo original que vai ser convertido, arquivo que foi convertido e vai retornar, entrada de dados
-int conersorBinToTxt(FILE *pFile, FILE *pFile2, DadosPesquisa entrada){
+int conversorBinToTxt(FILE *pFile, FILE *pFile2, DadosPesquisa entrada){
     Item item;
     for(int i = 0; i < entrada.quant ; i++){
 
         fread(&item, sizeof(Item), 1, pFile2);
-        fprintf(pFile2, "%8ld %4.1f %[A-Z a-z] %[A-Z a-z] %[A-Z a-z]",item.numInscricao, item.notas, item.estado, item.cidade, item.curso);
+        fprintf(pFile2, "%8ld %4.1f %s %s %s",item.numInscricao, item.notas, item.estado, item.cidade, item.curso);
     }
     return 0;
 
@@ -97,7 +106,7 @@ int inverte(FILE *pFile,FILE *pFile2,DadosPesquisa  entrada){
 //arquivo que vai ser gerado por stream, Os dados de entrada
 int converte(FILE *pFile, DadosPesquisa entrada){
     FILE *pFile2;
-
+    
     switch(entrada.situacao){
         case 1:
             pFile = fopen("aleatorio.bin", "rb");
@@ -112,7 +121,13 @@ int converte(FILE *pFile, DadosPesquisa entrada){
             
         break;
         case 3:
-            pFile = fopen("PROVAO.txt", "r");
+            pFile = fopen("PROVAO.TXT", "r");
+            if(pFile == NULL){
+                printf("Não abriu arquivo");
+                exit(1);
+
+            }
+            
             pFile2 = fopen("aleatorio.bin", "wb");
             conversor(pFile, pFile2, entrada);
             
