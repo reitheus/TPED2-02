@@ -141,9 +141,9 @@ int menu(int argc, char **argv) {
       printf("\nOpção invalida\n");
 
   }
-
-  conversorBinToTxt(pFile2, entrada);
-
+  if(entrada.metodo != 4){
+    conversorBinToTxt(pFile2, entrada);
+  }
   if((strcmp(entrada.op, "-P") == 0 || strcmp(entrada.op, "-p") == 0) && entrada.metodo != 5){
     printf("\nArquivo Original");
     printArquivo(entrada.quant, pFile);
