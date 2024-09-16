@@ -1,8 +1,31 @@
 #include "../include/menu.h"
 #include "../include/item.h"
+#include "../include/quicksortE.h"
 
 
-#define TAMREAD 102
+#define TAMCOPIA 1000
+#define TAMREAD 101
+
+
+int copiaFile(FILE *pFile, FILE *pFile2, DadosPesquisa entrada){
+    int i = 0;
+    int quant = TAMCOPIA;
+    Item itens[TAMCOPIA];
+    fseek(pFile, 0, SEEK_SET);
+    fseek(pFile2, 0, SEEK_SET);
+    while(i < entrada.quant ){
+        if((entrada.quant - i) < TAMCOPIA){
+            quant = (entrada.quant - i);
+        }
+        
+        fread(itens, sizeof(Item), quant, pFile);
+        fwrite(itens, sizeof(Item), quant, pFile2);
+        i += quant;
+
+    }
+    return 0;
+}
+
 
 //converte os itens de um vetor linha para uma struct
 //entrada: linha lida do texto, item passado por ponteiro que vai ser retornado
@@ -109,18 +132,26 @@ int inverte(FILE *pFile,FILE *pFile2,DadosPesquisa  entrada){
 int converte(FILE *pFile, DadosPesquisa entrada){
     FILE *pFile2;
     
+
     switch(entrada.situacao){
         case 1:
-            pFile = fopen("aleatorio.bin", "rb");
-            //Ordena o arquivo e coloca ele no Ascendente.bin
-            pFile2 = fopen("ascendente.bin", "wb");
+            pFile = fopen("aleatorio.bin", "r+b");
+            pFile2 = fopen("ascendente.bin", "w+b");
             
+            fseek(pFile, 0, SEEK_SET);
+            fseek(pFile2, 0, SEEK_SET);
+            copiaFile(pFile, pFile2, entrada);
+            fseek(pFile, 0, SEEK_SET);
+            fseek(pFile2, 0, SEEK_SET);
+
+            quicksortExterno(&pFile2, &pFile2, &pFile2, 1, entrada.quant, &entrada.analise);
+       
         break;
         case 2:
-            pFile = fopen("ascendente.bin", "rb");
-            pFile2 = fopen("descendente.bin", "wb");
+            pFile = fopen("ascendente.bin", "r+b");
+            pFile2 = fopen("descendente.bin", "w+b");
             inverte(pFile, pFile2, entrada);
-            
+ 
         break;
         case 3:
             pFile = fopen("PROVAO.TXT", "r");
@@ -132,6 +163,7 @@ int converte(FILE *pFile, DadosPesquisa entrada){
             
             pFile2 = fopen("aleatorio.bin", "wb");
             conversor(pFile, pFile2, entrada);
+            //printArquivo(entrada.quant, pFile);
             
         break;
         default:

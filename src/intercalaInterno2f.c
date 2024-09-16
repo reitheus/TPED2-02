@@ -2,6 +2,7 @@
 #include "../include/item.h"
 #include "../include/intercalaInterno2f.h"
 #include "../include/ordenar.h"
+#include "../include/gerador.h"
 #include <sys/stat.h>
 #include <ctype.h>
 #include <string.h>
@@ -14,31 +15,13 @@ int menorItem(Item *itens) {
     int pos, i;
     float menor = 9999999999999.9;
     for( i = 0; i < 20; i++){
+        
         if(itens[i].notas < menor && itens[i].notas >= 0.0){
             menor = itens[i].notas;
             pos = i;
         }
     }
     return pos;
-}
-
-int copiaFile(FILE *pFile, FILE *pFile2, DadosPesquisa entrada){
-    int i = 0;
-    int quant;
-    Item itens[1000];
-    fseek(pFile, 0, SEEK_SET);
-    fseek(pFile2, 0, SEEK_SET);
-    while(i < entrada.quant){
-        if((entrada.quant - i) < 1000){
-            quant = (entrada.quant - i);
-        }
-        
-        fread(itens, sizeof(Item), quant, pFile);
-        fwrite(itens, sizeof(Item), quant, pFile2);
-        i += quant;
-
-    }
-    return 0;
 }
 
 int abreArquivos(FITAS *fitas, int familia){
@@ -82,6 +65,7 @@ int etapa1(FILE *pFile, FITAS *fitas1, DadosPesquisa entrada, Item *itens){
     int quantLe = 20;
     
     while(i < entrada.quant){
+        
         if((entrada.quant - i) < 20 ){
             quantLe = (entrada.quant - i);
         }
@@ -130,6 +114,7 @@ int verificaSeAsFitasEstaoAtivas(FITAS *fitas){
 int reativaAsFitas(FITAS *fitas){
     
     for(int k = 0; k < 20; k++){
+        
         fitas[k].itensLido = 0;
         if(fitas[k].quantItens > 0){
             fitas[k].ativa = 1;
@@ -185,9 +170,11 @@ FILE *intercala(FILE *pFile, FITAS *fitas1, FITAS *fitas2, DadosPesquisa entrada
         i = 0;
         while(i < entrada.quant - 1){
             
+            
             preencheVetor(fitasEntrada, itens);//primeiro preenchimento do vetor
             
             while(verificaSeAsFitasEstaoAtivas(fitasEntrada)){//loop que contrada a construção de cada bloco
+                
                 
                 posMenor = menorItem(itens);
 
@@ -228,6 +215,7 @@ FILE *intercala(FILE *pFile, FITAS *fitas1, FITAS *fitas2, DadosPesquisa entrada
     setPonteiroFitas(fitasSaida);
    
     for( j = 0; j < 20; j++){
+        
         if(fitasSaida[j].vazia == 0){
             break;
         }

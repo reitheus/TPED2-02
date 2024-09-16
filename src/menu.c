@@ -1,5 +1,6 @@
 #include "../include/menu.h"
 #include "../include/item.h"
+#include "../include/quicksortE.h"
 #include "../include/intercalaInterno2f.h"
 #include <ctype.h>
 #include <string.h>
@@ -35,7 +36,8 @@ int printArquivo(int tam, FILE *pFile){
     fread(vetor,sizeof(Item), quant, pFile);
     //fseek(pFile, NITENS, SEEK_CUR);
     for(int i = 0; i < quant; i++){
-      printf("\nItem notas %.1f estado %s curso %s ", vetor[i].notas, vetor[i].estado, vetor[i].curso);
+      //printf("\nItem notas %.1f estado %s curso %s ", vetor[i].notas, vetor[i].estado, vetor[i].curso);
+      printf("\nItem notas %.1f curso %s ", vetor[i].notas, vetor[i].curso);
 
     }
   }
@@ -130,6 +132,11 @@ int menu(int argc, char **argv) {
       //intercalaSelecao();
     break;
     case 3:
+      pFile2 = fopen("ordenado.bin","r+b");
+      copiaFile(pFile, pFile2, entrada);
+      fseek(pFile, 0, SEEK_SET);
+      fseek(pFile2, 0, SEEK_SET);
+      quick(pFile2, &entrada);
       //quicksort();
     break;
     case 4:
@@ -144,6 +151,7 @@ int menu(int argc, char **argv) {
   if(entrada.metodo != 4){
     conversorBinToTxt(pFile2, entrada);
   }
+
   if((strcmp(entrada.op, "-P") == 0 || strcmp(entrada.op, "-p") == 0) && entrada.metodo != 5){
     printf("\nArquivo Original");
     printArquivo(entrada.quant, pFile);
