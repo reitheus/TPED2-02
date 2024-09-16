@@ -28,7 +28,7 @@ int converteLinhaEmStruct(char *linha, Item *item){
         i++;
         j++;
     }
-    i = 16;
+    i = 15;
     j = 0;
     while(i < 17){//copia o estado do aluno para matriz
         texto[2][j] = linha[i];
@@ -42,7 +42,7 @@ int converteLinhaEmStruct(char *linha, Item *item){
         i++;
         j++;
     }
-    i = 70;
+    i = 69;
     j = 0;
     while(i < 99){// copia o curso do aluno para matriz
         texto[4][j] = linha[i];
@@ -60,15 +60,17 @@ int converteLinhaEmStruct(char *linha, Item *item){
 }
 
 //Parametros:Arquivo original que vai ser convertido, arquivo que foi convertido e vai retornar, entrada de dados
-int conversorBinToTxt(FILE *pFile, FILE *pFile2, DadosPesquisa entrada){
+int conversorBinToTxt(FILE *pFile, DadosPesquisa entrada){
+    FILE *pFile2;
+    pFile2 = fopen("ordenado.txt", "w");
     Item item;
     for(int i = 0; i < entrada.quant ; i++){
 
         fread(&item, sizeof(Item), 1, pFile2);
-        fprintf(pFile2, "%8ld %4.1f %s %s %s",item.numInscricao, item.notas, item.estado, item.cidade, item.curso);
+        fprintf(pFile2, "%8ld %4.1f %s %s %s \n",item.numInscricao, item.notas, item.estado, item.cidade, item.curso);
     }
     return 0;
-
+    fclose(pFile2);
 }
 
 

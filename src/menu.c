@@ -1,5 +1,6 @@
 #include "../include/menu.h"
 #include "../include/item.h"
+#include "../include/intercalaInterno2f.h"
 #include <ctype.h>
 #include <string.h>
 
@@ -34,7 +35,8 @@ int printArquivo(int tam, FILE *pFile){
     fread(vetor,sizeof(Item), quant, pFile);
     //fseek(pFile, NITENS, SEEK_CUR);
     for(int i = 0; i < quant; i++){
-      printf("Item %.1f\n", vetor[i].notas);
+      printf("\nItem notas %.1f estado %s curso %s ", vetor[i].notas, vetor[i].estado, vetor[i].curso);
+
     }
   }
     
@@ -52,7 +54,7 @@ int menu(int argc, char **argv) {
     argv[5] Opcional se vai aparecer as chaves e pesquisa - p
   */
 
-  FILE *pFile, *pFile2;
+  FILE *pFile, *pFile2 = NULL;
   //Item x;
   DadosPesquisa entrada;
   entrada.metodo = atoi(argv[1]);
@@ -87,7 +89,7 @@ int menu(int argc, char **argv) {
   if(entrada.metodo != 4){
     switch(entrada.situacao){
       case 1:
-        pFile = fopen("ascendente.bin", "r+b");
+        pFile = fopen("ascendente.bin", "rb");
         if(pFile == NULL){
           printf("Arquivo não encontrado, primeiro gere o arquivo ascendente.bin\n");
           printf("Para gerar o arquivo utilize  opção 4, Gere o arquivo aleatorio depois gere o arquivo Ascendente");
@@ -95,7 +97,7 @@ int menu(int argc, char **argv) {
         }
       break;
       case 2:
-        pFile = fopen("descendente.bin", "r+b");
+        pFile = fopen("descendente.bin", "rb");
         if(pFile == NULL){
           printf("Arquivo não encontrado, primeiro gere o arquivo ascendente.bin\n");
           printf("Para gerar o arquivo utilize  opção 4, Gere o arquivo aleatorio,\n depois gere o arquivo Ascendente,\n depois Gere o arquivo descendente");
@@ -103,7 +105,7 @@ int menu(int argc, char **argv) {
         }
       break;
       case 3:
-        pFile = fopen("aleatorio.bin", "r+b");
+        pFile = fopen("aleatorio.bin", "rb");
         if(pFile == NULL){
           printf("Arquivo não encontrado, primeiro gere o arquivo ascendente.bin\n");
           printf("Para gerar o arquivo utilize  opção 4, Gere o arquivo aleatorio");
@@ -116,18 +118,19 @@ int menu(int argc, char **argv) {
     }
   }
   
+
+
   switch(entrada.metodo){
     case 1:
-      //intercalaOrdenaInterno(pFile, pFile2, entrada);
+      pFile2 = fopen("ordenado.bin","w+b");
+      intercalaOrdenaInterno(pFile, pFile2, entrada);
       
     break;
     case 2:
       //intercalaSelecao();
     break;
     case 3:
-
-      quick(pFile,&entrada);
-
+      //quicksort();
     break;
     case 4:
       
@@ -139,13 +142,19 @@ int menu(int argc, char **argv) {
 
   }
 
-if((strcmp(entrada.op, "-P") == 0 || strcmp(entrada.op, "-p") == 0) && entrada.metodo != 5){
-  printArquivo(entrada.quant, pFile);
-}
+  conversorBinToTxt(pFile2, entrada);
+
+  if((strcmp(entrada.op, "-P") == 0 || strcmp(entrada.op, "-p") == 0) && entrada.metodo != 5){
+    printf("\nArquivo Original");
+    printArquivo(entrada.quant, pFile);
+    printf("\n-----------------------------------------\n");
+    printf("\nArquivo Ordenado");
+    printArquivo(entrada.quant, pFile2);
+  }
 
   if(entrada.metodo != 4){
-    
     fclose(pFile);
+    fclose(pFile2);
   }
 
   return 0;

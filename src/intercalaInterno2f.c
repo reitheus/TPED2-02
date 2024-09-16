@@ -1,16 +1,20 @@
 #include "../include/menu.h"
 #include "../include/item.h"
 #include "../include/intercalaInterno2f.h"
-#include "../include/quicksort.h"
+#include "../include/ordenar.h"
+#include <sys/stat.h>
 #include <ctype.h>
 #include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
 
 //Procura o menor item dentro do vetor e retorna sua posição
-int menorItem(Item *itens){
+int menorItem(Item *itens) {
     int pos, i;
-    float menor = 9999999999999;
+    float menor = 9999999999999.9;
     for( i = 0; i < 20; i++){
-        if(itens[i].notas < menor && itens[i].notas > 0){
+        if(itens[i].notas < menor && itens[i].notas >= 0.0){
             menor = itens[i].notas;
             pos = i;
         }
@@ -22,23 +26,27 @@ int copiaFile(FILE *pFile, FILE *pFile2, DadosPesquisa entrada){
     int i = 0;
     int quant;
     Item itens[1000];
+    fseek(pFile, 0, SEEK_SET);
+    fseek(pFile2, 0, SEEK_SET);
     while(i < entrada.quant){
         if((entrada.quant - i) < 1000){
             quant = (entrada.quant - i);
         }
+        
         fread(itens, sizeof(Item), quant, pFile);
         fwrite(itens, sizeof(Item), quant, pFile2);
+        i += quant;
 
     }
     return 0;
 }
 
-int abreArquivos(FITAS *fitas){
-    char nome[4];
+int abreArquivos(FITAS *fitas, int familia){
+    char nome[15];
 
     for(int k = 0; k < 20; k++){
 
-        sprintf(nome, "f%i",k+1);
+        sprintf(nome, "fitas/f%i-%i", familia, k+1);
        
         fitas[k].quantItens = 0;
         fitas[k].ativa = 0;
@@ -46,7 +54,7 @@ int abreArquivos(FITAS *fitas){
         fitas[k].vazia = 1;
         fitas[k].file = fopen(nome, "w+b");
         if(fitas[k].file == NULL){
-            printf("ERRO ao abrir arquivo F Fitas numero %i", k+1);
+            printf("ERRO ao abrir arquivo F Fitas numero %i da familia %i", k+1, familia);
             exit(1);
         }
     }
@@ -81,6 +89,7 @@ int etapa1(FILE *pFile, FITAS *fitas1, DadosPesquisa entrada, Item *itens){
         fread(itens, sizeof(Item), quantLe, pFile);
         i += quantLe;
         //Quicksort Interno para ordenar os itens
+        ordenarItens(itens, quantLe, &entrada.analise);
 
         fwrite(itens, sizeof(Item), quantLe, fitas1[k].file);
         fitas1[k].ativa = 1;
@@ -93,23 +102,18 @@ int etapa1(FILE *pFile, FITAS *fitas1, DadosPesquisa entrada, Item *itens){
             k++;
         }
     }
-
     return 0;
 }
 
-int verificaSeOrdenacaoAcabou(FITAS *fitas){
+int verificaSeOrdenacaoAcabou(FITAS *fitas){//retorna a quantidade de fitas com itens
     int cont = 0;
     for(int k = 0; k < 20; k++){
         if(fitas[k].vazia == 0){//se vazio é falsa quer dizer que ainda tem bloco na fita
             cont++;
         }
     }
-    if(cont > 1){// se cont for maior que um quer dizer que ainda tem mais de um bloco para ser ordenado
-        return 0;
-    }else{//se cont for igual 1 só tem um bloco em uma fita então o arquivo está todo ordenado
-        return 1;
-    }
-
+    
+    return cont;
 }
 
 int verificaSeAsFitasEstaoAtivas(FITAS *fitas){
@@ -124,12 +128,14 @@ int verificaSeAsFitasEstaoAtivas(FITAS *fitas){
 }
 
 int reativaAsFitas(FITAS *fitas){
+    
     for(int k = 0; k < 20; k++){
         fitas[k].itensLido = 0;
         if(fitas[k].quantItens > 0){
             fitas[k].ativa = 1;
             fitas[k].vazia = 0;
         }else if(fitas[k].quantItens <= 0){
+            
             fitas[k].vazia = 1;
             fitas[k].ativa = 0;
         }
@@ -140,7 +146,7 @@ int reativaAsFitas(FITAS *fitas){
 int preencheVetor(FITAS *fitas, Item *itens){
     
     for(int i = 0; i < 20;i++){
-        if(fitas[i].ativa == 1){
+        if(fitas[i].ativa == 1 && fitas[i].vazia == 0){
             fread(&itens[i], sizeof(Item), 1, fitas[i].file);
             fitas[i].itensLido++;
             fitas[i].quantItens--;
@@ -157,11 +163,12 @@ FILE *intercala(FILE *pFile, FITAS *fitas1, FITAS *fitas2, DadosPesquisa entrada
     FITAS *fitasSaida = fitas2;
     int tamBloco = 20;
     int posMenor;
-
+    
     setPonteiroFitas(fitas1);
     setPonteiroFitas(fitas2);
 
-    while(!verificaSeOrdenacaoAcabou(fitasSaida)){
+    while(!(verificaSeOrdenacaoAcabou(fitasSaida) == 1)){
+
         if( troca == 1){//seleiona qual cojunto de fitas vai ser as fitas de entrada no momento
             fitasEntrada = fitas1;
             fitasSaida = fitas2;
@@ -174,48 +181,58 @@ FILE *intercala(FILE *pFile, FITAS *fitas1, FITAS *fitas2, DadosPesquisa entrada
         reativaAsFitas(fitasEntrada);
         setPonteiroFitas(fitasEntrada);
         setPonteiroFitas(fitasSaida);
-        while(i < entrada.quant){
-
+        k = 0;
+        i = 0;
+        while(i < entrada.quant - 1){
+            
             preencheVetor(fitasEntrada, itens);//primeiro preenchimento do vetor
-
+            
             while(verificaSeAsFitasEstaoAtivas(fitasEntrada)){//loop que contrada a construção de cada bloco
+                
                 posMenor = menorItem(itens);
 
                 fwrite(&itens[posMenor],sizeof(Item),1, fitasSaida[k].file);
                 fitasSaida[k].quantItens++;
+                fitasSaida[k].vazia = 0;
                 
                 i++;
 
+                if(fitasEntrada[posMenor].itensLido >= tamBloco ){//se já tiver lido todos os itens do bloco desativa a fita
+                    fitasEntrada[posMenor].ativa = 0;
+                }
+                if(fitasEntrada[posMenor].quantItens <= 0 ){
+                    fitasEntrada[posMenor].ativa = 0;
+                    fitasEntrada[posMenor].vazia = 1;
+                }
+
                 if(fitasEntrada[posMenor].ativa == 1){//Verifica se a fita está ativa para poder ler
+
                     fread(&itens[posMenor], sizeof(Item), 1, fitasEntrada[posMenor].file);//Le o novo valor da fita que vai para o vetor
+
                     fitasEntrada[posMenor].itensLido++;
                     fitasEntrada[posMenor].quantItens--;
-                    if(fitasEntrada[posMenor].itensLido >= tamBloco ){//se já tiver lido todos os itens do bloco desativa a fita
-                        fitasEntrada[posMenor].ativa = 0;
-                    }
-                    if(fitasEntrada[posMenor].quantItens <= 0 ){
-                        fitasEntrada[posMenor].ativa = 0;
-                        fitasEntrada[posMenor].vazia = 1;
-                    }
                 }else{
                     itens[posMenor].notas = -1.0;//isso torna o item referente a esta posição e fita inativo
                 }
             }
             k++;
-            reativaAsFitas(fitasEntrada);
             
+            reativaAsFitas(fitasEntrada);
  
         }
         tamBloco = tamBloco*20;
-
+        reativaAsFitas(fitasSaida);
+        
     }
-
+    
+    setPonteiroFitas(fitasSaida);
+   
     for( j = 0; j < 20; j++){
         if(fitasSaida[j].vazia == 0){
             break;
         }
     }
-
+    
   return fitasSaida[j].file;
 
 }
@@ -228,24 +245,24 @@ int intercalaOrdenaInterno(FILE *pFile, FILE *pFile2, DadosPesquisa entrada){
     FITAS fitas2[20];
     FILE *aux;
 
-
     //abre os 40 arquivos
-    abreArquivos(fitas1);
-    abreArquivos(fitas2);
+    mkdir("./fitas", 0755);//cria uma pasta para ficar as fitas
+    //CreateDirectory ("/home/henrique/Desktop/TP02ED2/TP02 V2/src", NULL);
+    abreArquivos(fitas1, 1);
+    abreArquivos(fitas2, 2);
     
     //ETAPA 1
     //1 é lido blocos de 20 registros e ordenados
     //2 cada bloco é colocado em uma fita seguindo a ordem até acabar as fitas
 
-
     etapa1(pFile, fitas1, entrada, itens);
-  
-  
+
     //ETAPA 2
     aux = intercala(pFile, fitas1, fitas2, entrada, itens);
 
     copiaFile(aux, pFile2, entrada);//Copia o arquivo da fita que continha todo o bloco ordenado para o arquivo final
-
+    fseek(pFile, 0, SEEK_SET);
+    fseek(pFile2, 0, SEEK_SET);
 
     fechaArquivos(fitas1);
     fechaArquivos(fitas2);
