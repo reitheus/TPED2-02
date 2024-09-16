@@ -87,7 +87,7 @@ int menu(int argc, char **argv) {
   if(entrada.metodo != 4){
     switch(entrada.situacao){
       case 1:
-        pFile = fopen("ascendente.bin", "rb");
+        pFile = fopen("ascendente.bin", "r+b");
         if(pFile == NULL){
           printf("Arquivo não encontrado, primeiro gere o arquivo ascendente.bin\n");
           printf("Para gerar o arquivo utilize  opção 4, Gere o arquivo aleatorio depois gere o arquivo Ascendente");
@@ -95,7 +95,7 @@ int menu(int argc, char **argv) {
         }
       break;
       case 2:
-        pFile = fopen("descendente.bin", "rb");
+        pFile = fopen("descendente.bin", "r+b");
         if(pFile == NULL){
           printf("Arquivo não encontrado, primeiro gere o arquivo ascendente.bin\n");
           printf("Para gerar o arquivo utilize  opção 4, Gere o arquivo aleatorio,\n depois gere o arquivo Ascendente,\n depois Gere o arquivo descendente");
@@ -103,7 +103,7 @@ int menu(int argc, char **argv) {
         }
       break;
       case 3:
-        pFile = fopen("aleatorio.bin", "rb");
+        pFile = fopen("aleatorio.bin", "r+b");
         if(pFile == NULL){
           printf("Arquivo não encontrado, primeiro gere o arquivo ascendente.bin\n");
           printf("Para gerar o arquivo utilize  opção 4, Gere o arquivo aleatorio");
@@ -125,7 +125,9 @@ int menu(int argc, char **argv) {
       //intercalaSelecao();
     break;
     case 3:
-      //quicksort();
+
+      quick(pFile,&entrada);
+
     break;
     case 4:
       

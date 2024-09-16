@@ -1,6 +1,7 @@
 #ifndef MENU_H
 #define MENU_H
 #include "../include/gerador.h"
+#include "../include/quicksortE.h"
 
 int erros();
 
