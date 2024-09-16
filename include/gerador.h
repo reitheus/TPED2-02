@@ -6,6 +6,10 @@
 #ifndef GERADOR_H
 #define GERADOR_H
 
+
+//copia um arquivo binario para outro
+int copiaFile(FILE *pFile, FILE *pFile2, DadosPesquisa entrada);
+
 //converte um arquivo binario para TXT e o nomeia como ordenado.txt
 //parametros: arquivo binario, dados de entrada
 int conversorBinToTxt(FILE *pFile, DadosPesquisa entrada);

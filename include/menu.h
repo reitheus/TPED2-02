@@ -4,6 +4,8 @@
 
 int erros();
 
+int printArquivo(int tam, FILE *pFile);
+
 int menu(int, char **);
 
 #endif // MENU_H
