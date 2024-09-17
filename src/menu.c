@@ -132,7 +132,7 @@ int menu(int argc, char **argv) {
       //intercalaSelecao();
     break;
     case 3:
-      pFile2 = fopen("ordenado.bin","r+b");
+      pFile2 = fopen("ordenado.bin","w+b");
       copiaFile(pFile, pFile2, entrada);
       fseek(pFile, 0, SEEK_SET);
       fseek(pFile2, 0, SEEK_SET);
