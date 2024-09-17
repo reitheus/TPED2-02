@@ -45,10 +45,14 @@ int abreArquivos(FITAS *fitas, int familia){
     return 0;
 }
 
-int fechaArquivos(FITAS *fitas){
-    
+int fechaArquivos(FITAS *fitas, int familia){
+    char nome[15];
     for(int k = 0; k < 20; k++){
+        sprintf(nome, "fitas/f%i-%i", familia, k+1);
+
         fclose(fitas[k].file);
+
+        remove(nome);
     }
     return 0;
 
@@ -269,8 +273,9 @@ int intercalaOrdenaInterno(FILE *pFile, FILE *pFile2, DadosPesquisa *entrada){
     printf("\nnumero de Escritas %i", entrada->analise.numTransEscrita);
     printf("\nnumero de Comparações %i\n", entrada->analise.numComp);
 
-    fechaArquivos(fitas1);
-    fechaArquivos(fitas2);
+    fechaArquivos(fitas1, 1);
+    fechaArquivos(fitas2, 2);
+    remove("./fitas");
     
     return 0;
 
