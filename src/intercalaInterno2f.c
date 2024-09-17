@@ -14,17 +14,16 @@
 int menorItem(Item *itens) {
     int pos, i;
     float menor = 9999999999999.9;
-    for( i = 0; i < 20; i++){
-        
+    for( i = 0; i < 20; i++){   
         if(itens[i].notas < menor && itens[i].notas >= 0.0){
             menor = itens[i].notas;
             pos = i;
         }
     }
-    
     return pos;
 }
 
+//Abre os arquivos das fitas
 int abreArquivos(FITAS *fitas, int familia){
     char nome[15];
 
@@ -45,19 +44,18 @@ int abreArquivos(FITAS *fitas, int familia){
     return 0;
 }
 
+//Fecha os arquivos das fitas e Exclui 
 int fechaArquivos(FITAS *fitas, int familia){
     char nome[15];
     for(int k = 0; k < 20; k++){
         sprintf(nome, "fitas/f%i-%i", familia, k+1);
-
         fclose(fitas[k].file);
-
         remove(nome);
     }
     return 0;
-
 }
 
+//Coloca o ponteiro de todas as fitas no inicio
 int setPonteiroFitas(FITAS *fitas){
     for(int i = 0; i < 20; i++){
         fseek(fitas[i].file, 0, SEEK_SET);
@@ -65,28 +63,33 @@ int setPonteiroFitas(FITAS *fitas){
     return 0;
 }
 
+
+//Etapa 1 do processo de intercalação balanceada
+//Le o arquivo original e controi os blocos ordenados em cada fita
 int etapa1(FILE *pFile, FITAS *fitas1, DadosPesquisa *entrada, Item *itens){
     int i = 0, k = 0;
     int quantLe = 20;
     
-    while(i < entrada->quant){
+    while(i < entrada->quant){// Enquanto houver item executa
         
         if((entrada->quant - i) < 20 ){
             quantLe = (entrada->quant - i);
         }
-
+        //LÊ os arquivos no arquivo original
         fread(itens, sizeof(Item), quantLe, pFile);
         entrada->analise.numTransLeitura++;
         i += quantLe;
         //Quicksort Interno para ordenar os itens
         ordenarItens(itens, quantLe, &entrada->analise);
 
+        //Depois de ordenado escreve em uma das fitas indicada
         fwrite(itens, sizeof(Item), quantLe, fitas1[k].file);
         entrada->analise.numTransEscrita++;
         fitas1[k].ativa = 1;
         fitas1[k].vazia = 0;
         fitas1[k].quantItens += quantLe;
         
+        //Se acabou as fitas inicia na primeira fita novamente para continuar escrevendo
         if(k == 19){
             k = 0;
         }else{
@@ -96,6 +99,7 @@ int etapa1(FILE *pFile, FITAS *fitas1, DadosPesquisa *entrada, Item *itens){
     return 0;
 }
 
+//verifica quantas fitas ainda contem blocos e retorna a quantidade
 int verificaSeOrdenacaoAcabou(FITAS *fitas){//retorna a quantidade de fitas com itens
     int cont = 0;
     for(int k = 0; k < 20; k++){
@@ -107,6 +111,7 @@ int verificaSeOrdenacaoAcabou(FITAS *fitas){//retorna a quantidade de fitas com 
     return cont;
 }
 
+//Verifica quantas fitas estão ativas e retorna a quantidade
 int verificaSeAsFitasEstaoAtivas(FITAS *fitas){
     int cont = 0;
     for(int k = 0; k < 20; k++){
@@ -118,6 +123,7 @@ int verificaSeAsFitasEstaoAtivas(FITAS *fitas){
 
 }
 
+//Reativa as ficas que contem itens
 int reativaAsFitas(FITAS *fitas){
     
     for(int k = 0; k < 20; k++){
@@ -135,6 +141,7 @@ int reativaAsFitas(FITAS *fitas){
     return 0;
 }
 
+//Preenche o vetor com um item de cada fita ativa
 int preencheVetor(FITAS *fitas, Item *itens){
     
     for(int i = 0; i < 20;i++){
@@ -150,37 +157,40 @@ int preencheVetor(FITAS *fitas, Item *itens){
 }
 
 FILE *intercala(FILE *pFile, FITAS *fitas1, FITAS *fitas2, DadosPesquisa *entrada, Item *itens){
+    //Inicializa as variaveis contadoras
     int k = 0, i = 0, troca = 1, j;
     FITAS *fitasEntrada = fitas1;
     FITAS *fitasSaida = fitas2;
-    int tamBloco = 20;
+    int tamBloco = 20;//inicializa o tamanho do bloco
     int posMenor;
     
+    //coloca os ponteiros das fitas no inicio
     setPonteiroFitas(fitas1);
     setPonteiroFitas(fitas2);
 
-    while(!(verificaSeOrdenacaoAcabou(fitasSaida) == 1)){
+    while(!(verificaSeOrdenacaoAcabou(fitasSaida) == 1)){//Verifica a quantidade de fitas com blocos se for igual a 1 termina o loop
 
-        if( troca == 1){//seleiona qual cojunto de fitas vai ser as fitas de entrada no momento
+        //seleiona qual cojunto de fitas vai ser as fitas de entrada no momento
+        if( troca == 1){//se troca = 1 fitas 1 vai ser as fitas de entrada
             fitasEntrada = fitas1;
             fitasSaida = fitas2;
             troca = troca*(-1);
-        }else if(troca == -1){
+        }else if(troca == -1){//se troca = -1 fitas 2 vai ser as fitas de entrada
             fitasEntrada = fitas2;
             fitasSaida = fitas1;
             troca = troca*(-1);
         }
-        reativaAsFitas(fitasEntrada);
+        reativaAsFitas(fitasEntrada);//Reativa as fitas que contem itens para uso
         setPonteiroFitas(fitasEntrada);
         setPonteiroFitas(fitasSaida);
         k = 0;
         i = 0;
-        while(i < entrada->quant - 1){
+        while(i < entrada->quant - 1){//Enquanto houver itens para ser intercalos vão gerar novos blocos nas itas de saida
             
             preencheVetor(fitasEntrada, itens);//primeiro preenchimento do vetor
             entrada->analise.numTransLeitura += 20;
             
-            while(verificaSeAsFitasEstaoAtivas(fitasEntrada)){//loop que contrada a construção de cada bloco
+            while(verificaSeAsFitasEstaoAtivas(fitasEntrada)){//loop que controla a construção de cada bloco
             
                 posMenor = menorItem(itens);
                 entrada->analise.numComp += 20;
@@ -189,8 +199,6 @@ FILE *intercala(FILE *pFile, FITAS *fitas1, FITAS *fitas2, DadosPesquisa *entrad
                 entrada->analise.numTransEscrita++;
                 fitasSaida[k].quantItens++;
                 fitasSaida[k].vazia = 0;
-                
-                
                 
                 i++;
 
@@ -220,38 +228,41 @@ FILE *intercala(FILE *pFile, FITAS *fitas1, FITAS *fitas2, DadosPesquisa *entrad
             reativaAsFitas(fitasEntrada);
  
         }
-        tamBloco = tamBloco*20;
+        tamBloco = tamBloco*20;//multiplica a quantidade maxima do tamanho do proximo bloco que vai ser lido
         reativaAsFitas(fitasSaida);
         
     }
     
     setPonteiroFitas(fitasSaida);
    
+    //Encontra em qual fita está o Bloco final ordenado
     for( j = 0; j < 20; j++){
         
         if(fitasSaida[j].vazia == 0){
             break;
         }
     }
-  return fitasSaida[j].file;
+  return fitasSaida[j].file;// Retorna a Fita ordenada
 
 }
 
 //Parametros: Arquivo original que vai ser ordenado, arquivo que foi ordenado, Dados de entrada
 int intercalaOrdenaInterno(FILE *pFile, FILE *pFile2, DadosPesquisa *entrada){
-
+    //inicializa as variaveis de analise
     entrada->analise.numTransEscrita = 0;
     entrada->analise.numTransLeitura = 0;
     entrada->analise.numComp = 0;
     entrada->analise.time = (double)clock();
     Item itens[20];//cria um vetor que contem 20 itens
+    //cria os vetores de fitas
     FITAS fitas1[20];
     FITAS fitas2[20];
     FILE *aux;
 
     //abre os 40 arquivos
     mkdir("./fitas", 0755);//cria uma pasta para ficar as fitas
-    //CreateDirectory ("/home/henrique/Desktop/TP02ED2/TP02 V2/src", NULL);
+    
+    //Incializa as fitas
     abreArquivos(fitas1, 1);
     abreArquivos(fitas2, 2);
     
@@ -261,7 +272,7 @@ int intercalaOrdenaInterno(FILE *pFile, FILE *pFile2, DadosPesquisa *entrada){
 
     etapa1(pFile, fitas1, entrada, itens);
 
-    //ETAPA 2
+    //ETAPA 2 É feito a intercalação dos itens na fitas até que reste somente uma fita com 1 unico bloco
     aux = intercala(pFile, fitas1, fitas2, entrada, itens);
     entrada->analise.time = (((double)clock()) - entrada->analise.time)/CLOCKS_PER_SEC;
     copiaFile(aux, pFile2, *entrada);//Copia o arquivo da fita que continha todo o bloco ordenado para o arquivo final
@@ -273,10 +284,11 @@ int intercalaOrdenaInterno(FILE *pFile, FILE *pFile2, DadosPesquisa *entrada){
     printf("\nnumero de Escritas %i", entrada->analise.numTransEscrita);
     printf("\nnumero de Comparações %i\n", entrada->analise.numComp);
 
+    //Fecha os arquivos fitas e apaga da memória
     fechaArquivos(fitas1, 1);
     fechaArquivos(fitas2, 2);
+    //Apaga a pasta criada para ficar as fitas
     remove("./fitas");
     
     return 0;
-
 }

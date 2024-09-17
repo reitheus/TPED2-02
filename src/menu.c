@@ -36,8 +36,8 @@ int printArquivo(int tam, FILE *pFile){
     fread(vetor,sizeof(Item), quant, pFile);
     //fseek(pFile, NITENS, SEEK_CUR);
     for(int i = 0; i < quant; i++){
-      //printf("\nItem notas %.1f estado %s curso %s ", vetor[i].notas, vetor[i].estado, vetor[i].curso);
-      printf("\nItem notas %.1f curso %s ", vetor[i].notas, vetor[i].curso);
+      printf("\nItem notas %.1f estado %s curso %s ", vetor[i].notas, vetor[i].estado, vetor[i].curso);
+      //printf("\nItem notas %.1f curso %s ", vetor[i].notas, vetor[i].curso);
 
     }
   }

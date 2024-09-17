@@ -4,7 +4,7 @@
 
 
 #define TAMCOPIA 1000
-#define TAMREAD 101
+#define TAMREAD 102
 
 
 int copiaFile(FILE *pFile, FILE *pFile2, DadosPesquisa entrada){
@@ -39,7 +39,7 @@ int converteLinhaEmStruct(char *linha, Item *item){
     // texto[4] éCurso do aluno
     j = 0;
     //Os loops abaixo copiam o dado em questão em sequência para uma matriz temporaria
-    while(i < 8){//copia os dados do número de inscrição da linha lida para uma matriz temporaria
+    while(i < 9){//copia os dados do número de inscrição da linha lida para uma matriz temporaria
         texto[0][j] = linha[i];
         i++;
         j++;
@@ -58,26 +58,32 @@ int converteLinhaEmStruct(char *linha, Item *item){
         i++;
         j++;
     }
-    i = 19;
+    texto[2][2] = '\0';
+    i = 18;
     j = 0;
     while(i < 68){//copia  a cidade do aluno para matriz
         texto[3][j] = linha[i];
         i++;
         j++;
     }
+    texto[2][j+25] = '\0';
     i = 69;
+
     j = 0;
     while(i < 88){// copia o curso do aluno para matriz
         texto[4][j] = linha[i];
         i++;
         j++;
     }
+    texto[4][j+1] = '\0';
 
     //o proximo passo é pegar os dados e colocar na struct
     item->numInscricao = atoi(texto[0]);//converte o dado para inteiro e atribui na struct
+    printf("\nnum ins %li", item->numInscricao);
     item->notas = atof(texto[1]);//converte o dado para float e atribui na struct
     strcpy(item->estado, texto[2]);//copia o dado para struct
     strcpy(item->cidade, texto[3]);
+    printf("%s", item->cidade);
     strcpy(item->curso, texto[4]);
     return 0;
 }
@@ -85,12 +91,14 @@ int converteLinhaEmStruct(char *linha, Item *item){
 //Parametros:Arquivo original que vai ser convertido, arquivo que foi convertido e vai retornar, entrada de dados
 int conversorBinToTxt(FILE *pFile, DadosPesquisa entrada){
     FILE *pFile2;
-    pFile2 = fopen("ordenado.txt", "w");
+    pFile2 = fopen("ordenado.txt", "w+");
     Item item;
+    fseek(pFile, 0, SEEK_SET);
     for(int i = 0; i < entrada.quant ; i++){
 
-        fread(&item, sizeof(Item), 1, pFile2);
-        fprintf(pFile2, "%8ld %4.1f %s %s %s \n",item.numInscricao, item.notas, item.estado, item.cidade, item.curso);
+        fread(&item, sizeof(Item), 1, pFile);
+        printf("\n%s",item.cidade);
+        fprintf(pFile2, "%08ld %4.1f %2s %s %50s \n",item.numInscricao, item.notas, item.estado, item.cidade, item.curso);
     }
     return 0;
     fclose(pFile2);
