@@ -18,7 +18,7 @@ typedef struct fitas{
 }FITAS;
 
 
-int intercalaOrdenaInterno(FILE *, FILE *, DadosPesquisa );
+int intercalaOrdenaInterno(FILE *, FILE *, DadosPesquisa *);
 
 
 #endif // INTERCALAINTERNO2F_H
