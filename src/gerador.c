@@ -67,7 +67,7 @@ int converteLinhaEmStruct(char *linha, Item *item){
     }
     i = 69;
     j = 0;
-    while(i < 99){// copia o curso do aluno para matriz
+    while(i < 88){// copia o curso do aluno para matriz
         texto[4][j] = linha[i];
         i++;
         j++;

@@ -27,7 +27,6 @@ int partition(Item *arr, int esq, int dir, Analise *analise) {
 void quickSort(Item *arr, int esq, int dir, Analise *analise) {
     if (esq < dir) {
         int pi = partition(arr, esq, dir, analise);
-
         
         quickSort(arr, esq, pi - 1, analise);
         quickSort(arr, pi + 1, dir, analise);
@@ -37,8 +36,6 @@ void quickSort(Item *arr, int esq, int dir, Analise *analise) {
 // aloca dinamicamente o vetor e chamar o QuickSort
 void ordenarItens(Item *arr, int tamanho, Analise *analise) {
     
-
     quickSort(arr, 0, tamanho - 1, analise);
 
-   
 }

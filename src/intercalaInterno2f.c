@@ -21,6 +21,7 @@ int menorItem(Item *itens) {
             pos = i;
         }
     }
+    
     return pos;
 }
 
@@ -60,22 +61,24 @@ int setPonteiroFitas(FITAS *fitas){
     return 0;
 }
 
-int etapa1(FILE *pFile, FITAS *fitas1, DadosPesquisa entrada, Item *itens){
+int etapa1(FILE *pFile, FITAS *fitas1, DadosPesquisa *entrada, Item *itens){
     int i = 0, k = 0;
     int quantLe = 20;
     
-    while(i < entrada.quant){
+    while(i < entrada->quant){
         
-        if((entrada.quant - i) < 20 ){
-            quantLe = (entrada.quant - i);
+        if((entrada->quant - i) < 20 ){
+            quantLe = (entrada->quant - i);
         }
 
         fread(itens, sizeof(Item), quantLe, pFile);
+        entrada->analise.numTransLeitura++;
         i += quantLe;
         //Quicksort Interno para ordenar os itens
-        ordenarItens(itens, quantLe, &entrada.analise);
+        ordenarItens(itens, quantLe, &entrada->analise);
 
         fwrite(itens, sizeof(Item), quantLe, fitas1[k].file);
+        entrada->analise.numTransEscrita++;
         fitas1[k].ativa = 1;
         fitas1[k].vazia = 0;
         fitas1[k].quantItens += quantLe;
@@ -142,7 +145,7 @@ int preencheVetor(FITAS *fitas, Item *itens){
     return 0;
 }
 
-FILE *intercala(FILE *pFile, FITAS *fitas1, FITAS *fitas2, DadosPesquisa entrada, Item *itens){
+FILE *intercala(FILE *pFile, FITAS *fitas1, FITAS *fitas2, DadosPesquisa *entrada, Item *itens){
     int k = 0, i = 0, troca = 1, j;
     FITAS *fitasEntrada = fitas1;
     FITAS *fitasSaida = fitas2;
@@ -168,42 +171,48 @@ FILE *intercala(FILE *pFile, FITAS *fitas1, FITAS *fitas2, DadosPesquisa entrada
         setPonteiroFitas(fitasSaida);
         k = 0;
         i = 0;
-        while(i < entrada.quant - 1){
-            
+        while(i < entrada->quant - 1){
             
             preencheVetor(fitasEntrada, itens);//primeiro preenchimento do vetor
+            entrada->analise.numTransLeitura += 20;
             
             while(verificaSeAsFitasEstaoAtivas(fitasEntrada)){//loop que contrada a construção de cada bloco
-                
-                
+            
                 posMenor = menorItem(itens);
-
+                entrada->analise.numComp += 20;
+                
                 fwrite(&itens[posMenor],sizeof(Item),1, fitasSaida[k].file);
+                entrada->analise.numTransEscrita++;
                 fitasSaida[k].quantItens++;
                 fitasSaida[k].vazia = 0;
+                
+                
                 
                 i++;
 
                 if(fitasEntrada[posMenor].itensLido >= tamBloco ){//se já tiver lido todos os itens do bloco desativa a fita
                     fitasEntrada[posMenor].ativa = 0;
                 }
-                if(fitasEntrada[posMenor].quantItens <= 0 ){
+                if(fitasEntrada[posMenor].quantItens <= 0 || feof(fitasEntrada[posMenor].file) != 0){
                     fitasEntrada[posMenor].ativa = 0;
                     fitasEntrada[posMenor].vazia = 1;
                 }
 
                 if(fitasEntrada[posMenor].ativa == 1){//Verifica se a fita está ativa para poder ler
-
+                    
                     fread(&itens[posMenor], sizeof(Item), 1, fitasEntrada[posMenor].file);//Le o novo valor da fita que vai para o vetor
-
+                    entrada->analise.numTransLeitura++;
                     fitasEntrada[posMenor].itensLido++;
                     fitasEntrada[posMenor].quantItens--;
                 }else{
                     itens[posMenor].notas = -1.0;//isso torna o item referente a esta posição e fita inativo
                 }
             }
-            k++;
-            
+            if(k == 19){
+                k = 0;
+            }else{
+                k++;
+            }
             reativaAsFitas(fitasEntrada);
  
         }
@@ -220,14 +229,17 @@ FILE *intercala(FILE *pFile, FITAS *fitas1, FITAS *fitas2, DadosPesquisa entrada
             break;
         }
     }
-    
   return fitasSaida[j].file;
 
 }
 
 //Parametros: Arquivo original que vai ser ordenado, arquivo que foi ordenado, Dados de entrada
-int intercalaOrdenaInterno(FILE *pFile, FILE *pFile2, DadosPesquisa entrada){
-    
+int intercalaOrdenaInterno(FILE *pFile, FILE *pFile2, DadosPesquisa *entrada){
+
+    entrada->analise.numTransEscrita = 0;
+    entrada->analise.numTransLeitura = 0;
+    entrada->analise.numComp = 0;
+    entrada->analise.time = (double)clock();
     Item itens[20];//cria um vetor que contem 20 itens
     FITAS fitas1[20];
     FITAS fitas2[20];
@@ -247,13 +259,19 @@ int intercalaOrdenaInterno(FILE *pFile, FILE *pFile2, DadosPesquisa entrada){
 
     //ETAPA 2
     aux = intercala(pFile, fitas1, fitas2, entrada, itens);
-
-    copiaFile(aux, pFile2, entrada);//Copia o arquivo da fita que continha todo o bloco ordenado para o arquivo final
+    entrada->analise.time = (((double)clock()) - entrada->analise.time)/CLOCKS_PER_SEC;
+    copiaFile(aux, pFile2, *entrada);//Copia o arquivo da fita que continha todo o bloco ordenado para o arquivo final
     fseek(pFile, 0, SEEK_SET);
     fseek(pFile2, 0, SEEK_SET);
 
+    printf("\ntempo = %f", entrada->analise.time);
+    printf("\nnumero de leituras %i", entrada->analise.numTransLeitura);
+    printf("\nnumero de Escritas %i", entrada->analise.numTransEscrita);
+    printf("\nnumero de Comparações %i\n", entrada->analise.numComp);
+
     fechaArquivos(fitas1);
     fechaArquivos(fitas2);
+    
     return 0;
 
 }

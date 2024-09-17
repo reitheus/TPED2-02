@@ -125,7 +125,7 @@ int menu(int argc, char **argv) {
   switch(entrada.metodo){
     case 1:
       pFile2 = fopen("ordenado.bin","w+b");
-      intercalaOrdenaInterno(pFile, pFile2, entrada);
+      intercalaOrdenaInterno(pFile, pFile2, &entrada);
       
     break;
     case 2:
