@@ -100,6 +100,7 @@ void partitionE(FILE **ArqLi,FILE **ArqEi,FILE **ArqlEs,TipoA area, int esq,int 
             dados->numTransLeitura+=2;
         }
 
+        dados->numComp++;
         if(UltLido.notas > Lsup){
             *j = EscS;
             escreveMax(ArqlEs,UltLido,&EscS);
@@ -108,6 +109,7 @@ void partitionE(FILE **ArqLi,FILE **ArqEi,FILE **ArqlEs,TipoA area, int esq,int 
             continue;
         }
         
+        dados->numComp++;
         if(UltLido.notas < Linf){
             *i = EscI;
             escreveMin(ArqEi,UltLido,&EscI);

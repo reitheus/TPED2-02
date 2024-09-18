@@ -1,9 +1,9 @@
 # Variáveis
 CC = gcc
-CFLAGS = -Wall -g -Iinclude
+CFLAGS = -Wall
 EXEC = programa.exe
 SRC_DIR =  src
-OBJ_DIR = obj
+OBJ_DIR = src
 
 
 SRCS = $(wildcard $(SRC_DIR)/*.c)
@@ -14,16 +14,9 @@ all: $(EXEC)
 	
 # Regra de compilação
 $(EXEC): $(OBJS)
-	$(CC) -o $@ $^
+	@$(CC) -o $@ $^ 
 
 # Regra de compilação dos objetos
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-clean:	
-	rm -f $(OBJ_DIR)/*.o 
-
-distclean: clean
-	rm -rf $(OBJ_DIR)
+	@$(CC) $(CFLAGS) -c $< -o $@
 

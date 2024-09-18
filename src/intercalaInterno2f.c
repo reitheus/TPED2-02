@@ -279,11 +279,6 @@ int intercalaOrdenaInterno(FILE *pFile, FILE *pFile2, DadosPesquisa *entrada){
     fseek(pFile, 0, SEEK_SET);
     fseek(pFile2, 0, SEEK_SET);
 
-    printf("\ntempo = %f", entrada->analise.time);
-    printf("\nnumero de leituras %i", entrada->analise.numTransLeitura);
-    printf("\nnumero de Escritas %i", entrada->analise.numTransEscrita);
-    printf("\nnumero de Comparações %i\n", entrada->analise.numComp);
-
     //Fecha os arquivos fitas e apaga da memória
     fechaArquivos(fitas1, 1);
     fechaArquivos(fitas2, 2);

@@ -79,11 +79,9 @@ int converteLinhaEmStruct(char *linha, Item *item){
 
     //o proximo passo é pegar os dados e colocar na struct
     item->numInscricao = atoi(texto[0]);//converte o dado para inteiro e atribui na struct
-    printf("\nnum ins %li", item->numInscricao);
     item->notas = atof(texto[1]);//converte o dado para float e atribui na struct
     strcpy(item->estado, texto[2]);//copia o dado para struct
     strcpy(item->cidade, texto[3]);
-    printf("%s", item->cidade);
     strcpy(item->curso, texto[4]);
     return 0;
 }
@@ -97,7 +95,6 @@ int conversorBinToTxt(FILE *pFile, DadosPesquisa entrada){
     for(int i = 0; i < entrada.quant ; i++){
 
         fread(&item, sizeof(Item), 1, pFile);
-        printf("\n%s",item.cidade);
         fprintf(pFile2, "%08ld %4.1f %2s %s %50s \n",item.numInscricao, item.notas, item.estado, item.cidade, item.curso);
     }
     return 0;

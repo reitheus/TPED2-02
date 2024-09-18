@@ -33,8 +33,8 @@ typedef struct dadospesquisa{
   Analise analise;
 } DadosPesquisa;
 
-void impreResultado(bool ,DadosPesquisa* ,Item* );
+void impreResultado(DadosPesquisa* );
 
-void impremeDado(DadosPesquisa* ,Item* );
+void impremeDado(DadosPesquisa* );
 
 #endif // ITEM_H

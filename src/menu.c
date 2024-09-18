@@ -137,7 +137,6 @@ int menu(int argc, char **argv) {
       fseek(pFile, 0, SEEK_SET);
       fseek(pFile2, 0, SEEK_SET);
       quick(pFile2, &entrada);
-      //quicksort();
     break;
     case 4:
       
@@ -161,6 +160,7 @@ int menu(int argc, char **argv) {
   }
 
   if(entrada.metodo != 4){
+    impreResultado(&entrada);
     fclose(pFile);
     fclose(pFile2);
   }
