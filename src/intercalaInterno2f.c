@@ -142,11 +142,12 @@ int reativaAsFitas(FITAS *fitas){
 }
 
 //Preenche o vetor com um item de cada fita ativa
-int preencheVetor(FITAS *fitas, Item *itens){
+int preencheVetor(FITAS *fitas, Item *itens, DadosPesquisa *entrada){
     
     for(int i = 0; i < 20;i++){
         if(fitas[i].ativa == 1 && fitas[i].vazia == 0){
             fread(&itens[i], sizeof(Item), 1, fitas[i].file);
+            entrada->analise.numTransLeitura++;
             fitas[i].itensLido++;
             fitas[i].quantItens--;
         }else{
@@ -187,8 +188,8 @@ FILE *intercala(FILE *pFile, FITAS *fitas1, FITAS *fitas2, DadosPesquisa *entrad
         i = 0;
         while(i < entrada->quant - 1){//Enquanto houver itens para ser intercalos vão gerar novos blocos nas itas de saida
             
-            preencheVetor(fitasEntrada, itens);//primeiro preenchimento do vetor
-            entrada->analise.numTransLeitura += 20;
+            preencheVetor(fitasEntrada, itens, entrada);//primeiro preenchimento do vetor
+            
             
             while(verificaSeAsFitasEstaoAtivas(fitasEntrada)){//loop que controla a construção de cada bloco
             
