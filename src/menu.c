@@ -129,7 +129,8 @@ int menu(int argc, char **argv) {
       
     break;
     case 2:
-      //intercalaSelecao();
+      //intercalação seleção
+
     break;
     case 3:
       pFile2 = fopen("ordenado.bin","w+b");
