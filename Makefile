@@ -1,7 +1,7 @@
 # Variáveis
 CC = gcc
-CFLAGS = -Wall -Iinclude
-EXEC = ordena
+CFLAGS = -Wall
+EXEC = programa.exe
 SRC_DIR =  src
 OBJ_DIR = src
 
@@ -15,7 +15,6 @@ all: $(EXEC)
 # Regra de compilação
 $(EXEC): $(OBJS)
 	@$(CC) -o $@ $^ 
-	@rm -f $(OBJ_DIR)/*.o
 
 # Regra de compilação dos objetos
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
