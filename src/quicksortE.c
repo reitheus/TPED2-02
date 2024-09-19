@@ -81,7 +81,7 @@ void partitionE(FILE **ArqLi,FILE **ArqEi,FILE **ArqlEs,TipoA area, int esq,int 
             } 
             insArea(&area,&UltLido,&area.NumCelOcupadas);
             continue;
-            
+    
         }
 
         if(LeS == EscS){
@@ -133,7 +133,6 @@ void partitionE(FILE **ArqLi,FILE **ArqEi,FILE **ArqlEs,TipoA area, int esq,int 
             dados->numTransLeitura++;
             Lsup = Reg.notas;
         }
-        
 
     }
     while(EscI <= EscS){
