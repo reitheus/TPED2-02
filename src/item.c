@@ -57,9 +57,9 @@ void impreResultado(DadosPesquisa *dado){
       for (int i = 0; i < 100; i++)printf(" ");
       printf(TAB_VER"\n");
       printf(TAB_VER);
-      for (int i = 0; i < 27; i++)printf(" ");//34
-      printf(YELLOW(BOLD("Ordenação Intercação Balanceada(2F) interna")));
-      for (int i = 0; i < 30; i++)printf(" ");//38
+      for (int i = 0; i < 34; i++)printf(" ");//34
+      printf(YELLOW(BOLD("Ordenação por Intercalação metodo ordenação interna")));
+      for (int i = 0; i < 15; i++)printf(" ");//38
       printf(TAB_VER"\n");
       printf(TAB_VER);
       for (int i = 0; i < 100; i++)printf(" ");
@@ -77,9 +77,9 @@ void impreResultado(DadosPesquisa *dado){
       for (int i = 0; i < 100; i++)printf(" ");
       printf(TAB_VER"\n");
       printf(TAB_VER);
-      for (int i = 0; i < 24; i++)printf(" ");
-      printf(CYAN(BOLD("Ordenação Intercação Balanceada(2F) por seleção")));
-      for (int i = 0; i < 29; i++)printf(" ");
+      for (int i = 0; i < 34; i++)printf(" ");
+      printf(CYAN(BOLD("Ordenação Intercalação por substituição por seleção")));
+      for (int i = 0; i < 15; i++)printf(" ");
       printf(TAB_VER"\n");
       printf(TAB_VER);
       for (int i = 0; i < 100; i++)printf(" ");

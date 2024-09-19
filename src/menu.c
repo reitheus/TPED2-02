@@ -2,6 +2,8 @@
 #include "../include/item.h"
 #include "../include/quicksortE.h"
 #include "../include/intercalaInterno2f.h"
+#include "../include/intercalaSubstit.h"
+#include "../include/intercalaSelect.h"
 #include <ctype.h>
 #include <string.h>
 
@@ -129,8 +131,9 @@ int menu(int argc, char **argv) {
       
     break;
     case 2:
-      //intercalação seleção
-
+      pFile2 = fopen("ordenado.bin","w+b");
+      
+      intercalaSubstituicao(pFile, pFile2, &entrada);
     break;
     case 3:
       pFile2 = fopen("ordenado.bin","w+b");
